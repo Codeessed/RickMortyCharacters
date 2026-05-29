@@ -1,0 +1,87 @@
+### Android ###
+*.iml
+.gradle/
+/local.properties
+/.idea/caches/
+/.idea/libraries/
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+/.idea/.name
+/.idea/compiler.xml
+/.idea/gradle.xml
+/.idea/misc.xml
+/.idea/vcs.xml
+/.idea/encodings.xml
+/.idea/inspectionProfiles/
+.DS_Store
+/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+local.properties
+
+### Gradle ###
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### Kotlin ###
+*.class
+*.kotlin_module
+
+### APK / AAB / Keystore ###
+*.apk
+*.aab
+*.ap_
+*.dex
+*.jks
+*.keystore
+
+### NDK ###
+obj/
+*.so
+
+### Test results ###
+/test-results/
+/lint-results/
+/lint-results*.xml
+*.lint.xml
+
+### ProGuard ###
+proguard/
+*.pro.map
+
+### IntelliJ / Android Studio ###
+out/
+.idea/shelf/
+*.iws
+.idea/httpRequests/
+.idea/dataSources/
+.idea/dataSourceSchemas/
+
+### macOS ###
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+### Windows ###
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+### Linux ###
+*~
+
+### Firebase ###
+google-services.json
+GoogleService-Info.plist
+.firebase/
+firebase-debug.log
+firestore-debug.log
