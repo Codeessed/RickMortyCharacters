@@ -30,6 +30,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -44,10 +45,21 @@ private val SPECIES_OPTIONS = listOf("Human", "Alien", "Robot", "Humanoid", "Myt
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharacterListScreen(
+    onNavigateToDetail: (Int) -> Unit = {},
     viewModel: CharacterListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val characters = uiState.characters.collectAsLazyPagingItems()
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is CharacterListEffect.NavigateToCharacterDetail -> {
+                    onNavigateToDetail(effect.characterId)
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
