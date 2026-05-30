@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.android.rickmortyandroid.core.data.db.AppDatabase
 import com.android.rickmortyandroid.feature.characters.data.local.CharacterDao
+import com.android.rickmortyandroid.feature.characters.data.local.CharacterDetailDao
 import com.android.rickmortyandroid.feature.characters.data.local.CharacterRemoteKeysDao
 import dagger.Module
 import dagger.Provides
@@ -23,7 +24,9 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             "rick_morty_database"
-        ).build()
+        )
+            .addMigrations(AppDatabase.MIGRATION_1_2)
+            .build()
     }
 
     @Provides
@@ -36,5 +39,11 @@ object DatabaseModule {
     @Singleton
     fun provideCharacterRemoteKeysDao(appDatabase: AppDatabase): CharacterRemoteKeysDao {
         return appDatabase.characterRemoteKeysDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCharacterDetailDao(appDatabase: AppDatabase): CharacterDetailDao {
+        return appDatabase.characterDetailDao()
     }
 }

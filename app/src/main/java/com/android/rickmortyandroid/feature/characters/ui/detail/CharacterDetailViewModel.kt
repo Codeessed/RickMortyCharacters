@@ -42,16 +42,32 @@ class CharacterDetailViewModel @Inject constructor(
 
     private fun loadCharacterDetail() {
         viewModelScope.launch {
-            _uiState.value = CharacterDetailUiState.Loading
-            getCharacterDetailUseCase(characterId)
-                .onSuccess { detail ->
-                    _uiState.value = CharacterDetailUiState.Success(detail)
-                }
-                .onFailure { error ->
-                    _uiState.value = CharacterDetailUiState.Error(
-                        error.localizedMessage ?: "Failed to load character"
-                    )
-                }
+            // Reset to Loading only if we don't already have data to show
+            if (_uiState.value !is CharacterDetailUiState.Success) {
+                _uiState.value = CharacterDetailUiState.Loading
+            } else {
+                // We have cached data — mark it as refreshing so the UI can show a subtle indicator
+                val current = _uiState.value as CharacterDetailUiState.Success
+                _uiState.value = current.copy(isRefreshing = true)
+            }
+
+            getCharacterDetailUseCase(characterId).collect { result ->
+                result
+                    .onSuccess { detail ->
+                        _uiState.value = CharacterDetailUiState.Success(
+                            character = detail,
+                            isRefreshing = false
+                        )
+                    }
+                    .onFailure { error ->
+                        // Only surface an error if we have no data to show
+                        if (_uiState.value !is CharacterDetailUiState.Success) {
+                            _uiState.value = CharacterDetailUiState.Error(
+                                error.localizedMessage ?: "Failed to load character"
+                            )
+                        }
+                    }
+            }
         }
     }
 }

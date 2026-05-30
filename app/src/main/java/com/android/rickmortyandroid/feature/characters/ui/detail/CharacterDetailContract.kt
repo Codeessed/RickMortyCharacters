@@ -9,7 +9,14 @@ sealed interface CharacterDetailIntent {
 
 sealed interface CharacterDetailUiState {
     data object Loading : CharacterDetailUiState
-    data class Success(val character: CharacterDetailModel) : CharacterDetailUiState
+    /**
+     * [isRefreshing] is true while a stale-cache background network refresh is in progress.
+     * The UI can show a subtle loading indicator without replacing the visible content.
+     */
+    data class Success(
+        val character: CharacterDetailModel,
+        val isRefreshing: Boolean = false
+    ) : CharacterDetailUiState
     data class Error(val message: String) : CharacterDetailUiState
 }
 
