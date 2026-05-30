@@ -1,6 +1,8 @@
 package com.android.rickmortyandroid.feature.characters.data.mapper
 
+import com.android.rickmortyandroid.feature.characters.data.local.CharacterDetailEntity
 import com.android.rickmortyandroid.feature.characters.data.local.CharacterEntity
+import com.android.rickmortyandroid.feature.characters.data.local.EpisodeEntity
 import com.android.rickmortyandroid.feature.characters.data.remote.CharacterDto
 import com.android.rickmortyandroid.feature.characters.data.remote.EpisodeDto
 import com.android.rickmortyandroid.feature.characters.domain.model.CharacterDetailModel
@@ -61,4 +63,57 @@ fun extractEpisodeIds(episodeUrls: List<String>): List<Int> {
     return episodeUrls.mapNotNull { url ->
         url.substringAfterLast("/").toIntOrNull()
     }
+}
+
+// ── Detail cache mappers ──────────────────────────────────────────────────────
+
+fun CharacterDto.toDetailEntity(cachedAt: Long): CharacterDetailEntity {
+    return CharacterDetailEntity(
+        id = id,
+        name = name,
+        status = status,
+        species = species,
+        type = type.ifBlank { "Unknown" },
+        gender = gender,
+        origin = origin.name,
+        location = location.name,
+        imageUrl = image,
+        totalEpisodeCount = episode.size,
+        cachedAt = cachedAt
+    )
+}
+
+fun EpisodeDto.toEpisodeEntity(characterId: Int): EpisodeEntity {
+    return EpisodeEntity(
+        id = id,
+        characterId = characterId,
+        name = name,
+        airDate = airDate,
+        episodeCode = episode
+    )
+}
+
+fun CharacterDetailEntity.toDetailDomain(episodes: List<EpisodeModel>): CharacterDetailModel {
+    return CharacterDetailModel(
+        id = id,
+        name = name,
+        status = status,
+        species = species,
+        type = type,
+        gender = gender,
+        origin = origin,
+        location = location,
+        imageUrl = imageUrl,
+        episodes = episodes,
+        totalEpisodeCount = totalEpisodeCount
+    )
+}
+
+fun EpisodeEntity.toDomain(): EpisodeModel {
+    return EpisodeModel(
+        id = id,
+        name = name,
+        airDate = airDate,
+        episodeCode = episodeCode
+    )
 }
