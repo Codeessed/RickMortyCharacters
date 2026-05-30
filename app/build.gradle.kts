@@ -97,12 +97,21 @@ dependencies {
     // Coroutines
     implementation(libs.coroutines.android)
 
-    // Testing
-    testImplementation(libs.junit)
+    // Testing — Unit (JVM, no device needed)
+    testImplementation(libs.junit)                         // JUnit 4 test runner
+    testImplementation(libs.mockk)                         // Kotlin mocking framework
+    testImplementation(libs.coroutines.test)                // runTest, TestDispatcher
+    testImplementation(libs.turbine)                        // Flow assertion DSL
+    testImplementation(libs.paging.testing)                 // PagingData test helpers
+
+    // Testing — Instrumented (emulator/device)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)  // Compose UI test APIs
+    androidTestImplementation(libs.paging.testing)                   // PagingData test helpers
+    androidTestImplementation(libs.room.testing)                     // In-memory Room database
+    androidTestImplementation(libs.coroutines.test)                  // runTest for suspend DAO methods
     debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)      // Compose test activity
 }
