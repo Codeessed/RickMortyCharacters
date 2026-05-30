@@ -22,9 +22,11 @@ import com.android.rickmortyandroid.feature.characters.domain.model.CharacterMod
 @Composable
 fun CharacterCard(
     character: CharacterModel,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Card(
+        onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(

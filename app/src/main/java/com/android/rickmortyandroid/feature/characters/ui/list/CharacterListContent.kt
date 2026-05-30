@@ -69,7 +69,10 @@ fun CharacterListContent(
                     key = { index -> characters.peek(index)?.id ?: index }
                 ) { index ->
                     characters[index]?.let { character ->
-                        CharacterCard(character = character)
+                        CharacterCard(
+                            character = character,
+                            onClick = { onCharacterClick(character.id) }
+                        )
                     }
                 }
                 

@@ -6,10 +6,13 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.android.rickmortyandroid.core.data.db.AppDatabase
+import com.android.rickmortyandroid.feature.characters.data.mapper.extractEpisodeIds
+import com.android.rickmortyandroid.feature.characters.data.mapper.toDetailDomain
 import com.android.rickmortyandroid.feature.characters.data.mapper.toDomain
 import com.android.rickmortyandroid.feature.characters.data.mediator.CharacterRemoteMediator
 import com.android.rickmortyandroid.feature.characters.data.remote.CharacterApi
 import com.android.rickmortyandroid.feature.characters.data.remote.CharacterSearchPagingSource
+import com.android.rickmortyandroid.feature.characters.domain.model.CharacterDetailModel
 import com.android.rickmortyandroid.feature.characters.domain.model.CharacterFilter
 import com.android.rickmortyandroid.feature.characters.domain.model.CharacterModel
 import com.android.rickmortyandroid.feature.characters.domain.repository.CharacterRepository
@@ -53,6 +56,29 @@ class CharacterRepositoryImpl @Inject constructor(
             pagingSourceFactory = { database.characterDao().pagingSource() }
         ).flow.map { pagingData ->
             pagingData.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun getCharacterDetail(characterId: Int): Result<CharacterDetailModel> {
+        return try {
+            val characterDto = api.getCharacterById(characterId)
+
+            // Extract the first 3 episode IDs from episode URLs
+            val episodeIds = extractEpisodeIds(characterDto.episode).take(3)
+
+            val episodes = if (episodeIds.isEmpty()) {
+                emptyList()
+            } else if (episodeIds.size == 1) {
+                // Single episode: API returns a single object, not a list
+                listOf(api.getEpisode(episodeIds.first()).toDomain())
+            } else {
+                // Multiple episodes: use comma-separated IDs
+                api.getEpisodes(episodeIds.joinToString(",")).map { it.toDomain() }
+            }
+
+            Result.success(characterDto.toDetailDomain(episodes))
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }
